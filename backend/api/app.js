@@ -1,3 +1,10 @@
+// API Key
+function fetchWeatherAndRelatedData(lat, lon) {
+  const apiKey = '212bc46d8e6c2b718acea73a2843f48e';
+  fetchWeather(lat, lon, apiKey);
+  fetchAQI(lat, lon);
+}
+
 // Fetch weather data
 function fetchWeather(lat, lon, apiKey) {
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`;
