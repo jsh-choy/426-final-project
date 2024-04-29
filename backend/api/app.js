@@ -2,7 +2,6 @@
 function fetchWeatherAndRelatedData(lat, lon) {
   const apiKey = '212bc46d8e6c2b718acea73a2843f48e';
   fetchWeather(lat, lon, apiKey);
-  fetchAQI(lat, lon);
 }
 
 // Fetch weather data
@@ -19,18 +18,4 @@ function fetchWeather(lat, lon, apiKey) {
         console.error('Error fetching weather:', error);
         alert("Failed to fetch weather data.");
     });
-}
-
-// Fetch UV index
-function fetchUVIndex(lat, lon, apiKey) {
-  const uvUrl = `https://api.openweathermap.org/data/2.5/uvi?lat=${lat}&lon=${lon}&appid=${apiKey}`;
-  fetch(uvUrl)
-      .then(response => response.json())
-      .then(data => {
-          displayUVIndex(data);
-      })
-      .catch(error => {
-        console.error('Error fetching UV Index:', error);
-        alert("Failed to fetch UV Index.");
-      });
 }
