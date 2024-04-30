@@ -8,7 +8,6 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 
-
 // API Key
 function fetchWeatherAndRelatedData(lat, lon) {
   const apiKey = '212bc46d8e6c2b718acea73a2843f48e';
