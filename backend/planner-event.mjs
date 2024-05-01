@@ -79,6 +79,10 @@ export class PlannerEvent {
         return (event == undefined ? null : event);
     }
 
+    static delete(id) {
+        PlannerEvent.#allEvents.filter(e => e.getID() != id);
+    }
+
     getID() {
         return this.#id;
     }
