@@ -1,0 +1,14 @@
+{
+  "name": "426-final-project",
+  "version": "1.0.0",
+  "description": "- Real-time weather updates\r - UV Index information",
+  "main": "planner.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
