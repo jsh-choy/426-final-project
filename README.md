@@ -17,3 +17,15 @@ This Calendar Application is a web-based planner that allows users to view weath
 
 ## Prerequisites
 - Web browser that supports HTML5, CSS3, and JavaScript
+
+## Installation
+Before you can run the application, make sure you have node.js installed
+
+1. Clone the repository
+2. Install dependencies: `npm install`
+
+## To contribute
+Contributions to this project are welcome! to contribute:
+* Fork the repository.
+* Create a new branch for each feature or improvement.
+* Send a pull request from each feature branch to the main branch for review.
