@@ -9,6 +9,7 @@
 - HTML5
 - CSS3
 - JavaScript
+- Express
 - APIs used:
   - OpenWeatherMap API for weather and UV index
 

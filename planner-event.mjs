@@ -18,8 +18,17 @@ export class PlannerEvent {
         this.#duration = duration;
     }
 
+    static isDate(date) {
+        return (new Date(date) !== "Invalid Date") && !isNaN(new Date(date));
+    }
+
     static all() {
-        return this.#allEvents;
+        let all = [];
+        PlannerEvent.#allEvents.forEach(event => {
+            all.push({"id": event.#id, "title": event.#title, "description": event.#description, "location": event.#location, "date": event.#date, "duration": event.#duration})
+        });
+        all = all.sort((a, b) => new Date(a.date) - new Date(b.date));
+        return all;
     }
 
     static create(data) {
@@ -27,7 +36,8 @@ export class PlannerEvent {
         && data.title !== undefined
         && typeof data.title == "string"
         && data.date !== undefined
-        && Object.prototype.toString.call(data.date) === '[object Date]') {
+        && typeof data.date == "string"
+        && this.isDate(data.date)) {
             let id = PlannerEvent.#next_id++;
             let title = data.title;
             let description = "";
@@ -47,7 +57,7 @@ export class PlannerEvent {
 
             let event = new PlannerEvent(id, title, description, location, date, duration);
             PlannerEvent.#allEvents.push(event);
-            return event;
+            return {"id": event.#id, "title": event.#title, "description": event.#description, "location": event.#location, "date": event.#date, "duration": event.#duration};
         }
         return null;
     }
@@ -64,14 +74,15 @@ export class PlannerEvent {
             if (data.location !== undefined && typeof data.location == 'string') {
                 event.#location = data.location;
             }
-            if (data.date !== undefined && Object.prototype.toString.call(data.date) === '[object Date]') {
+            if (data.date !== undefined && typeof data.date == "string"
+            && this.isDate(data.date)) {
                 event.#date = data.date;
             }
             if (data.duration !== undefined && typeof data.duration == 'number') {
                 event.#duration = data.duration;
             }
         }
-        return event;
+        return {"id": event.#id, "title": event.#title, "description": event.#description, "location": event.#location, "date": event.#date, "duration": event.#duration};
     }
 
     static getByID(id) {
@@ -79,8 +90,14 @@ export class PlannerEvent {
         return (event == undefined ? null : event);
     }
 
+    static getByIDJSON(id) {
+        let event = PlannerEvent.#allEvents.find(e => e.getID() == id);
+        return (event == undefined ? null : {"id": event.#id, "title": event.#title, "description": event.#description, "location": event.#location, "date": event.#date, "duration": event.#duration});
+    }
+
     static delete(id) {
-        PlannerEvent.#allEvents.filter(e => e.getID() != id);
+        PlannerEvent.#allEvents = PlannerEvent.#allEvents.filter(e => e.getID() != id);
+        return true;
     }
 
     getID() {
