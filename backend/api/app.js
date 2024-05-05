@@ -1,33 +1,30 @@
-document.addEventListener('DOMContentLoaded', function() {
-  navigator.geolocation.getCurrentPosition(position => {
-    const { latitude, longitude } = position.coords;
-    fetchWeatherAndRelatedData(latitude, longitude);
-  }, () => {
-    console.error('Geolocation is not supported by this browser.');
-    fetchNews();
-  });
+document.addEventListener('DOMContentLoaded', async function() {
+  try {
+      const position = await getCurrentPosition();
+      const { latitude, longitude } = position.coords;
+      const data = await fetchWeather(latitude, longitude);
+      displayWeather(data);
+  } catch (error) {
+      console.error('Error:', error);
+      handleLocationError(error);
+  }
 });
 
-// API Key
-function fetchWeatherAndRelatedData(lat, lon) {
-  const apiKey = '212bc46d8e6c2b718acea73a2843f48e';
-  fetchWeather(lat, lon, apiKey);
+async function getCurrentPosition() {
+  return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
 }
 
-// Fetch weather data
-function fetchWeather(lat, lon, apiKey) {
+async function fetchWeather(lat, lon) {
+  const apiKey = '212bc46d8e6c2b718acea73a2843f48e'; // Consider moving to server-side or environment variable
   const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=imperial`;
-  fetch(url)
-    .then(response => response.json())
-    .then(data => {
-        displayWeather(data);
-    })
-    .catch(error => {
-        // Check if the weather is fetching
-        console.error('Error fetching weather:', error);
-        alert("Failed to fetch weather data.");
-    });
-}
+  const response = await fetch(url);
+  if (!response.ok) {
+      throw new Error('Failed to fetch weather data');
+  }
+  return response.json();
+};
 
 function displayWeather(data) {
   console.log(data.weather[0].main); // Log the main weather condition to the console
@@ -37,7 +34,7 @@ function displayWeather(data) {
 
   temperature.innerHTML = `${data.main.temp} °F <i class="${getTemperatureIcon(data.main.temp)}"></i>`;
   conditions.innerHTML = `${data.weather[0].main} <i class="${getWeatherIcon(data.weather[0].main.toLowerCase())}"></i>`;
-}
+};
 
 function getWeatherIcon(condition) {
   const weatherIcons = {
@@ -57,7 +54,7 @@ function getWeatherIcon(condition) {
       tornado: 'wi wi-tornado'
   };
   return weatherIcons[condition] || 'wi wi-cloud'; // Default icon
-}
+};
 
 function getTemperatureIcon(temp) {
   if (temp <= 0) {
@@ -67,4 +64,9 @@ function getTemperatureIcon(temp) {
   } else {
       return 'fas fa-temperature-high'; // Hot
   }
-}
+};
+
+function handleLocationError(error) {
+  console.error('Geolocation error:', error);
+  alert('Geolocation is not supported by this browser.');
+};
