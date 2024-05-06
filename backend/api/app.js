@@ -27,8 +27,6 @@ async function fetchWeather(lat, lon) {
 };
 
 function displayWeather(data) {
-  console.log(data.weather[0].main); // Log the main weather condition to the console
-
   const temperature = document.getElementById('temperature');
   const conditions = document.getElementById('conditions');
 
