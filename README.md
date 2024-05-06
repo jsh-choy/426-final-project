@@ -14,7 +14,7 @@ This Calendar Application is a web-based planner that allows users to view weath
 - JavaScript
 - Express
 - APIs used:
-  - OpenWeatherMap API for weather and UV index
+  - OpenWeatherMap API for weather
 
 ## Prerequisites
 - Web browser that supports HTML5, CSS3, and JavaScript
