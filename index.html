@@ -40,7 +40,25 @@
         </ul>
         <ul class="days"></ul>
     </div>
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <form id="eventForm">
+                <input type="hidden" id="eventDate">
+                <label for="title">Title:</label>
+                <input type="text" id="title" name="title" required>
+                <label for="description">Description:</label>
+                <textarea id="description" name="description"></textarea>
+                <label for="location">Location:</label>
+                <input type="text" id="location" name="location">
+                <label for="duration">Duration (hours):</label>
+                <input type="number" id="duration" name="duration">
+                <button type="submit">Save Event</button>
+            </form>
+        </div>
+    </div>
 </div>
+
 <script src="planner.js" defer></script>
 <script src="backend/api/app.js"></script>
 
