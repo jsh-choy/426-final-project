@@ -6,7 +6,7 @@ export class PlannerEvent {
     #date
     #duration
 
-    static #next_id = 0;
+    static #next_id = 2;
     static #allEvents = [new PlannerEvent(0, "Event", "Sample Event", "Chapel Hill", "2024-05-06T14:50:46.381Z", 30), new PlannerEvent(1, "Event 2", "Sample Event 2", "Durham", "2024-05-05T14:50:46.381Z", 60)];
 
     constructor(id, title, description, location, date, duration) {
