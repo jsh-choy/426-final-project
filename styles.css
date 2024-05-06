@@ -132,17 +132,13 @@ header .current-date{
 /* Modal Base Styles */
 .modal {
   display: none; /* Hidden by default */
-  position: fixed; /* Fixed position */
-  z-index: 1000; /* High z-index to ensure it's on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgba(0,0,0,0.5); /* Black with opacity */
-  align-items: center;
-  justify-content: center;
-  display: flex;
+  position: fixed;
+  z-index: 1000;
+  right: 15%;
+  top: 50%;
+  width: 25%;
+  transform: translateY(-50%);
+  overflow: auto;
 }
 
 /* Modal Content Styles */

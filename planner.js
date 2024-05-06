@@ -114,15 +114,24 @@ function submitEventForm() {
     .then(response => response.json())
     .then(data => {
         alert("Event created successfully!");
+        clearFormFields();  // Function call to clear the form
         document.getElementById('eventModal').style.display = 'none';
         renderCalendar(); // Refresh the calendar to show the new event
     })
     .catch(error => {
         console.error('Error:', error);
         alert("Failed to create event.");
+        clearFormFields();
     });
 }
 
+function clearFormFields() {
+    // Assuming all form fields need to be cleared
+    document.getElementById('title').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('location').value = '';
+    document.getElementById('duration').value = '';
+}
 
 function deleteEvent(eventId) {
     fetch(`/events/${eventId}`, {
@@ -131,7 +140,7 @@ function deleteEvent(eventId) {
     .then(response => {
         if (response.ok) {
             alert("Event deleted successfully!");
-            renderCalendar(); // Refresh the calendar
+            renderCalendar();
         } else {
             alert("Failed to delete event.");
         }
