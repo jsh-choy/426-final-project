@@ -26,3 +26,4 @@ Before you can run the application, make sure you have node.js installed
 2. Install dependencies: `npm install`
 
 ## Link to presentation video
+Put link to presentation here.
