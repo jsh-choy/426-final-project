@@ -134,16 +134,18 @@ function clearFormFields() {
     document.getElementById('duration').value = '';
 }
 
+
 function deleteEvent(eventId) {
-    fetch(`http://localhost:3000/events/events/${eventId}`, {
+    fetch(`http://localhost:3000/events/${eventId}`, {
         method: 'DELETE'
     })
     .then(response => {
         if (response.ok) {
             alert("Event deleted successfully!");
-            renderCalendar();
+            renderCalendar(); // Re-render the calendar to reflect the deletion
         } else {
             alert("Failed to delete event.");
+            console.error('Delete failed:', response);
         }
     })
     .catch(error => {
@@ -152,21 +154,27 @@ function deleteEvent(eventId) {
     });
 }
 
+
 function displayEvents(day, month, year) {
     fetch('http://localhost:3000/events', {
         method: 'GET'
     })
     .then(response => response.json())
     .then(data => {
-        listDiv = document.getElementById("eventList");
+        const listDiv = document.getElementById("eventList");
         listDiv.innerHTML = "";
         data.forEach(event => {
             let date = new Date(event.date);
             if (date.getDate() == day && date.getMonth() == month && date.getFullYear() == year) {
-                listDiv.innerHTML += `<div class="event-box"><div class="event-title">${event.title}</div><hr>
-                <div class="date-time">${date.toDateString()}<br>${date.toTimeString()}</div>
-                <div class="event-description">${event.description}</div>
-                <div class="event-info">${event.location}<br>${event.duration} minutes</div></div>`;
+                listDiv.innerHTML += `
+                <div class="event-box">
+                    <div class="event-title">${event.title}</div>
+                    <hr>
+                    <div class="date-time">${date.toDateString()}<br>${date.toTimeString()}</div>
+                    <div class="event-description">${event.description}</div>
+                    <div class="event-info">${event.location}<br>${event.duration} minutes</div>
+                    <button onclick="deleteEvent(${event.id})">Delete Event</button>
+                </div>`;
             }
         });
     });
