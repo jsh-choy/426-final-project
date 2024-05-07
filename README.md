@@ -23,7 +23,7 @@ This Calendar Application is a web-based planner that allows users to view weath
 Before you can run the application, make sure you have node.js installed
 
 1. Clone the repository
-2. Install dependencies: `npm install`
+2. Install CORS: `npm install cors`
 
 ## Link to presentation video
 Put link to presentation here.
