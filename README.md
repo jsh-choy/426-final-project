@@ -24,7 +24,7 @@ Before you can run the application, make sure you have node.js installed
 
 1. Clone the repository
 2. Install CORS: `npm install cors`
-3. Run node `api.mjs`
+3. Run `node api.mjs`
 
 ## Link to presentation video
 Put link to presentation here.
