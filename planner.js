@@ -48,6 +48,7 @@ function renderCalendar() {
             const date = `${currYear}-${currMonth + 1}-${dayNumber}`; // Adjust month for proper format
             document.getElementById('eventDate').value = date;
             document.getElementById('eventModal').style.display = 'block';
+            displayEvents(dayNumber, currMonth, currYear);
         };
     });
 }
@@ -148,5 +149,25 @@ function deleteEvent(eventId) {
     .catch(error => {
         console.error('Error:', error);
         alert("Error deleting event.");
+    });
+}
+
+function displayEvents(day, month, year) {
+    fetch('http://localhost:3000/events', {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        listDiv = document.getElementById("eventList");
+        listDiv.innerHTML = "";
+        data.forEach(event => {
+            let date = new Date(event.date);
+            if (date.getDate() == day && date.getMonth() == month && date.getFullYear() == year) {
+                listDiv.innerHTML += `<div class="event-box"><div class="event-title">${event.title}</div><hr>
+                <div class="date-time">${date.toDateString()}<br>${date.toTimeString()}</div>
+                <div class="event-description">${event.description}</div>
+                <div class="event-info">${event.location}<br>${event.duration} minutes</div></div>`;
+            }
+        });
     });
 }
