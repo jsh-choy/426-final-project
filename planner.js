@@ -175,6 +175,7 @@ function setupDayClicks() {
     });
 }
 
+
 function displayEvents(day, month, year) {
     fetch('http://localhost:3000/events', {
         method: 'GET'
