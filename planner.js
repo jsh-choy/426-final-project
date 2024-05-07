@@ -1,3 +1,8 @@
+document.addEventListener('DOMContentLoaded', () => {
+    renderCalendar();
+    setupEventModal();
+});
+
 const daysTag = document.querySelector(".days"),
 currentDate = document.querySelector(".current-date"),
 prevNextIcon = document.querySelectorAll(".icons span");
@@ -13,49 +18,135 @@ const months = ["January", "February", "March", "April", "May", "June", "July",
 
 
 // Rendering the calendar
-const renderCalendar = () => {
-    let firstDayofMonth = new Date(currYear, currMonth, 1).getDay(), // Getting the first day of the month
-    lastDateofMonth = new Date(currYear, currMonth + 1, 0).getDate(), // Getting the last date of the month
-    lastDayofMonth = new Date(currYear, currMonth, lastDateofMonth).getDay(), // Getting the last day of the month
-    lastDateofLastMonth = new Date(currYear, currMonth, 0).getDate(); // Getting the last date of the previous month
+function renderCalendar() {
+    let firstDayOfMonth = new Date(currYear, currMonth, 1).getDay(),
+        lastDateOfMonth = new Date(currYear, currMonth + 1, 0).getDate(),
+        lastDayOfMonth = new Date(currYear, currMonth, lastDateOfMonth).getDay(),
+        lastDateOfLastMonth = new Date(currYear, currMonth, 0).getDate();
     let liTag = "";
 
-    for (let i = firstDayofMonth; i > 0; i--) { // Creating a list of the previous month's last days
-        liTag += `<li class="inactive">${lastDateofLastMonth - i + 1}</li>`;
+    for (let i = firstDayOfMonth; i > 0; i--) {
+        liTag += `<li class="inactive">${lastDateOfLastMonth - i + 1}</li>`;
     }
 
-    for (let i = 1; i <= lastDateofMonth; i++) { // Creating a list of all days of the current month
-
-        // Adding the active class to the list if the current day, month, and year matched
-        let isToday = i === date.getDate() && currMonth === new Date().getMonth() 
-                     && currYear === new Date().getFullYear() ? "active" : "";
+    for (let i = 1; i <= lastDateOfMonth; i++) {
+        let isToday = i === date.getDate() && currMonth === new Date().getMonth() && currYear === new Date().getFullYear() ? "active" : "";
         liTag += `<li class="${isToday}">${i}</li>`;
     }
 
-    for (let i = lastDayofMonth; i < 6; i++) { // Creating a list of the next month's first days
-        liTag += `<li class="inactive">${i - lastDayofMonth + 1}</li>`
+    for (let i = lastDayOfMonth; i < 6; i++) {
+        liTag += `<li class="inactive">${i - lastDayOfMonth + 1}</li>`;
     }
-    currentDate.innerText = `${months[currMonth]} ${currYear}`; // Passing the current month and year as currentDate text
+
+    currentDate.innerText = `${months[currMonth]} ${currYear}`;
     daysTag.innerHTML = liTag;
+
+    // Adding click event listeners to days
+    daysTag.querySelectorAll('li').forEach(day => {
+        day.onclick = () => { // Use onclick to replace any old handlers
+            const dayNumber = day.innerText;
+            const date = `${currYear}-${currMonth + 1}-${dayNumber}`; // Adjust month for proper format
+            document.getElementById('eventDate').value = date;
+            document.getElementById('eventModal').style.display = 'block';
+        };
+    });
 }
-renderCalendar();
 
-
-prevNextIcon.forEach(icon => { // Getting the previous and next icons
-    icon.addEventListener("click", () => { // Adding the click event on both icons
-
-        // If the clicked icon is the previous icon then decrement current month by 1 else increment it by 1
+prevNextIcon.forEach(icon => {
+    icon.addEventListener("click", () => {
         currMonth = icon.id === "prev" ? currMonth - 1 : currMonth + 1;
 
-        if(currMonth < 0 || currMonth > 11) { // If the current month is less than 0 or greater than 11
-
-            // Creating a new date of the current year & month and pass it as the date value
-            date = new Date(currYear, currMonth, new Date().getDate());
-            currYear = date.getFullYear(); // Updating the current year with the new date year
-            currMonth = date.getMonth(); // Updating the current month with new date month
-        } else {
-            date = new Date(); // Pass the current date as the date value
+        if (currMonth < 0 || currMonth > 11) {
+            currYear += currMonth < 0 ? -1 : 1;
+            currMonth = (currMonth + 12) % 12;
         }
-        renderCalendar(); // Calling the renderCalendar function
+        date = new Date(currYear, currMonth, 1); // Resets date to avoid date overflow
+        renderCalendar();
     });
 });
+
+
+function openEventForm(date) {
+    document.getElementById('eventDate').value = date; // Assuming you have a hidden field for date
+    document.getElementById('eventModal').style.display = 'block';
+}
+
+
+function setupEventModal() {
+    const modal = document.getElementById('eventModal');
+    const closeBtn = document.querySelector('.modal .close');
+    const form = document.getElementById('eventForm');
+
+    closeBtn.onclick = function() {
+        modal.style.display = 'none';
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        submitEventForm();
+    });
+}
+
+
+function submitEventForm() {
+    const form = document.getElementById('eventForm');
+    const eventData = {
+        date: form.eventDate.value,
+        title: form.title.value,
+        description: form.description.value,
+        location: form.location.value,
+        duration: parseInt(form.duration.value, 10)
+    };
+
+    fetch('http://localhost:3000/events', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(eventData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert("Event created successfully!");
+        clearFormFields();  // Function call to clear the form
+        document.getElementById('eventModal').style.display = 'none';
+        renderCalendar(); // Refresh the calendar to show the new event
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Failed to create event.");
+        clearFormFields();
+    });
+}
+
+function clearFormFields() {
+    // Assuming all form fields need to be cleared
+    document.getElementById('title').value = '';
+    document.getElementById('description').value = '';
+    document.getElementById('location').value = '';
+    document.getElementById('duration').value = '';
+}
+
+function deleteEvent(eventId) {
+    fetch(`http://localhost:3000/events/events/${eventId}`, {
+        method: 'DELETE'
+    })
+    .then(response => {
+        if (response.ok) {
+            alert("Event deleted successfully!");
+            renderCalendar();
+        } else {
+            alert("Failed to delete event.");
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert("Error deleting event.");
+    });
+}
