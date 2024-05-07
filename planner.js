@@ -104,7 +104,7 @@ function submitEventForm() {
         duration: parseInt(form.duration.value, 10)
     };
 
-    fetch('/events', {
+    fetch('http://localhost:3000/events', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -134,7 +134,7 @@ function clearFormFields() {
 }
 
 function deleteEvent(eventId) {
-    fetch(`/events/${eventId}`, {
+    fetch(`http://localhost:3000/events/events/${eventId}`, {
         method: 'DELETE'
     })
     .then(response => {
