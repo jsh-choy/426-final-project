@@ -1,7 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-    renderCalendar();
-    setupEventModal();
+    // Set up the CSS for event days
+    const style = document.createElement('style');
+    document.head.appendChild(style);
+    style.sheet.insertRule(`.days li.event { background-color: #ffd700; color: white; }`, 0);
+
+    // Fetch event dates and then render the calendar
+    fetchEventDates().then(() => {
+        renderCalendar();
+        setupEventModal();
+    });
 });
+
 
 const daysTag = document.querySelector(".days"),
 currentDate = document.querySelector(".current-date"),
@@ -30,8 +39,11 @@ function renderCalendar() {
     }
 
     for (let i = 1; i <= lastDateOfMonth; i++) {
+        const currentDate = new Date(currYear, currMonth, i);
+        const formattedDate = currentDate.toISOString().split('T')[0];
         let isToday = i === date.getDate() && currMonth === new Date().getMonth() && currYear === new Date().getFullYear() ? "active" : "";
-        liTag += `<li class="${isToday}">${i}</li>`;
+        let hasEvent = eventDates.has(formattedDate) ? "event" : "";
+        liTag += `<li class="${isToday} ${hasEvent}">${i}</li>`;
     }
 
     for (let i = lastDayOfMonth; i < 6; i++) {
@@ -41,9 +53,8 @@ function renderCalendar() {
     currentDate.innerText = `${months[currMonth]} ${currYear}`;
     daysTag.innerHTML = liTag;
 
-    // Adding click event listeners to days
     daysTag.querySelectorAll('li').forEach(day => {
-        day.onclick = () => { // Use onclick to replace any old handlers
+        day.onclick = () => {
             const dayNumber = day.innerText;
             const date = `${currYear}-${currMonth + 1}-${dayNumber}`; // Adjust month for proper format
             document.getElementById('eventDate').value = date;
@@ -54,6 +65,7 @@ function renderCalendar() {
 
     setupDayClicks();
 }
+
 
 prevNextIcon.forEach(icon => {
     icon.addEventListener("click", () => {
@@ -96,6 +108,21 @@ function setupEventModal() {
     });
 }
 
+let eventDates = new Set();
+
+async function fetchEventDates() {
+    try {
+        const response = await fetch('http://localhost:3000/events', { method: 'GET' });
+        const data = await response.json();
+        eventDates.clear(); // Clear old dates before setting new ones
+        data.forEach(event => {
+            const eventDate = new Date(event.date);
+            eventDates.add(eventDate.toISOString().split('T')[0]); // Store dates in 'YYYY-MM-DD' format
+        });
+    } catch (error) {
+        console.error('Error fetching event dates:', error);
+    }
+}
 
 function submitEventForm() {
     const form = document.getElementById('eventForm');
