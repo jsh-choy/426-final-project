@@ -51,6 +51,8 @@ function renderCalendar() {
             displayEvents(dayNumber, currMonth, currYear);
         };
     });
+
+    setupDayClicks();
 }
 
 prevNextIcon.forEach(icon => {
@@ -136,6 +138,10 @@ function clearFormFields() {
 
 
 function deleteEvent(eventId) {
+    if (!confirm("Are you sure you want to delete this event?")) {
+        return; // Stop the function if the user cancels the confirmation
+    }
+
     fetch(`http://localhost:3000/events/${eventId}`, {
         method: 'DELETE'
     })
@@ -154,6 +160,20 @@ function deleteEvent(eventId) {
     });
 }
 
+
+function setupDayClicks() {
+    const days = document.querySelectorAll('.days li:not(.inactive)');
+    days.forEach(day => {
+        day.addEventListener('click', () => {
+            document.querySelectorAll('.days li').forEach(d => d.classList.remove('day-selected'));
+            day.classList.add('day-selected');
+            const dayNumber = day.innerText;
+            const selectedDate = `${currYear}-${currMonth + 1}-${dayNumber}`;
+            document.getElementById('eventDate').value = selectedDate;  // Set this date in your hidden input field
+            document.getElementById('eventModal').style.display = 'block';  // Show the event modal
+        });
+    });
+}
 
 function displayEvents(day, month, year) {
     fetch('http://localhost:3000/events', {

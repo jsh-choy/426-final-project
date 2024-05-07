@@ -266,3 +266,9 @@ header .current-date{
   padding: 10px 10px 5px;
   font-size: 15px;
 }
+
+.day-selected {
+  background-color: #f0f8ff; /* Light blue background for the selected day */
+  color: #333; /* Darker text for better contrast */
+  border: 2px solid #1e90ff; /* Blue border to highlight the selected day */
+}
