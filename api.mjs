@@ -10,7 +10,6 @@ const port = 3000;
 app.use(bodyParser.json());
 app.use(cors());
 
-
 app.get('/events', (req, res) => {
     res.json(PlannerEvent.all());
 });
