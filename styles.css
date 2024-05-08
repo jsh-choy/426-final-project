@@ -6,29 +6,39 @@
   box-sizing: border-box;
   font-family: 'Poppins', sans-serif;
 }
+
 body{
+  background: #59b69f;
+}
+
+#calendar-content {
   display: flex;
   align-items: center;
   padding: 0 10px;
   justify-content: center;
-  min-height: 100vh;
-  background: #59b69f;
+  flex-wrap: wrap;
+  flex-direction: column;
+  min-height: 600px;
 }
+
 .wrapper{
   width: 450px;
   background: #fff;
   border-radius: 10px;
   box-shadow: 0 15px 40px rgba(0,0,0,0.12);
 }
+
 .wrapper header{
   display: flex;
   align-items: center;
   padding: 25px 30px 10px;
   justify-content: space-between;
 }
+
 header .icons{
   display: flex;
 }
+
 header .icons span{
   height: 38px;
   width: 38px;
@@ -41,49 +51,61 @@ header .icons span{
   user-select: none;
   border-radius: 50%;
 }
+
 .icons span:last-child{
   margin-right: -10px;
 }
+
 header .icons span:hover{
   background: #f2f2f2;
 }
+
 header .current-date{
   font-size: 1.45rem;
   font-weight: 500;
 }
+
 .calendar{
   padding: 20px;
 }
+
 .calendar ul{
   display: flex;
   flex-wrap: wrap;
   list-style: none;
   text-align: center;
 }
+
 .calendar .days{
   margin-bottom: 20px;
 }
+
 .calendar li{
   color: #333;
   width: calc(100% / 7);
   font-size: 1.07rem;
 }
+
 .calendar .weeks li{
   font-weight: 500;
   cursor: default;
 }
+
 .calendar .days li{
   z-index: 1;
   cursor: pointer;
   position: relative;
   margin-top: 30px;
 }
+
 .days li.inactive{
   color: #aaa;
 }
+
 .days li.active{
   color: #fff;
 }
+
 .days li::before{
   position: absolute;
   content: "";
@@ -95,11 +117,13 @@ header .current-date{
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
+
 .days li.active::before{
   background: #9B59B6;
 }
+
 .days li:not(.active):hover::before{
-  background: #f2f2f2;
+  background: #7ce0f9;
 }
 
 /* Weather */
@@ -108,4 +132,156 @@ header .current-date{
   color: white;
   padding: 25px;
   text-align: center;
+}
+
+.event {
+  display: block;
+  background-color: #ffcc00; /* Yellow background for visibility */
+  color: black;
+  text-align: center;
+  border-radius: 5px;
+  padding: 2px;
+  margin-top: 2px;
+}
+
+/* Modal Base Styles */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed;
+  z-index: 1000;
+  right: 10%;
+  top: 368px;
+  width: 25%;
+  transform: translateY(-50%);
+  overflow: auto;
+}
+
+/* Modal Content Styles */
+.modal-content {
+  position: relative;
+  background-color: #ffffff;
+  margin: auto; /* Center in viewport */
+  padding: 40px;
+  border: 1px solid #ccc;
+  width: 90%; /* Responsive width */
+  max-width: 500px; /* Maximum width */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow */
+  border-radius: 8px; /* Rounded corners for softer appearance */
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+}
+
+/* Form fields styling */
+.modal-content form {
+  display: flex;
+  flex-direction: column; /* Ensures form fields are stacked vertically */
+}
+
+/* Input fields and labels */
+.modal-content input[type="text"],
+.modal-content input[type="number"],
+.modal-content textarea {
+  padding: 10px;
+  margin-top: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px; /* Rounded borders on inputs */
+  resize: none; /* Prevent textarea resize handle */
+}
+
+.modal-content label {
+  margin-top: 20px;
+  margin-bottom: 5px;
+  font-size: 16px; /* Larger font size for labels */
+  color: #333; /* Dark gray color for better readability */
+}
+
+/* Close Button */
+.close {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  color: #aaa;
+  font-size: 24px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #333; /* Darker color on hover/focus for visibility */
+  text-decoration: none;
+}
+
+/* Submit button styling */
+.modal-content button {
+  padding: 12px 20px;
+  background-color: #5cb85c; /* Green background for confirmation actions */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.modal-content button:hover {
+  background-color: #4cae4c; /* Darker green on hover */
+}
+
+#eventList {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.event-box {
+  width: 450px;
+  margin: 10px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+  text-align: center;
+}
+
+.event-title {
+  font-size: 23px;
+  font-weight: bold;
+  padding: 7px;
+}
+
+.date-time {
+  padding: 5px;
+  font-size: 14px;
+  color: rgb(90, 90, 90);
+}
+
+.event-description {
+  padding: 5px;
+  font-size: 15px;
+}
+
+.event-info {
+  padding: 10px 10px 5px;
+  font-size: 15px;
+}
+
+.day-selected {
+  background-color: #f0f8ff; /* Light blue background for the selected day */
+  color: #333; /* Darker text for better contrast */
+  border: 2px solid #1e90ff; /* Blue border to highlight the selected day */
+}
+
+.delete-event {
+  padding: 5px;
+  background-color: #5cb85c; /* Green background for confirmation actions */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-event:hover {
+  background-color: #4cae4c;
 }

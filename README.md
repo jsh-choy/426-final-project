@@ -7,6 +7,7 @@ This Calendar Application is a web-based planner that allows users to view weath
 - Real-time weather updates
 - Add events to the calendar
 - Delete events from calendar
+- View events for each calendar day
 
 ## Technologies Used
 - HTML5
@@ -24,6 +25,7 @@ Before you can run the application, make sure you have node.js installed
 
 1. Clone the repository
 2. Install CORS: `npm install cors`
+3. Run `node api.mjs`
 
 ## Link to presentation video
 Put link to presentation here.
