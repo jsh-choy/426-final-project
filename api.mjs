@@ -1,12 +1,15 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {PlannerEvent} from './planner-event.mjs';
+import cors from 'cors';
+import { db } from './db.mjs'
 
 const app = express();
 
 const port = 3000;
 
 app.use(bodyParser.json());
+app.use(cors());
 
 app.get('/events', (req, res) => {
     res.json(PlannerEvent.all());
@@ -24,6 +27,17 @@ app.post('/events', (req, res) => {
     }
     res.location('/events/' + event.id);
     res.status(201).json(event);
+
+    const { title, description, location, date, duration, user_id } = req.body;
+    const sql = `INSERT INTO events (title, description , location, date, duration, user_id) VALUES (?, ?, ?, ?, ?, ?)`;
+
+    db.run(sql, [title, description, location, date, duration, user_id], function(err) {
+        if (err) {
+            res.status(500).send({ error: err.message });
+        } else {
+            res.status(201).send({ id: this.lastID });
+        }
+    });
 });
 
 app.put('/events/:id', (req, res) => {
@@ -54,13 +68,15 @@ app.delete('/events/:id', (req, res) => {
         res.status(400).send("Invalid ID");
         return;
     }
-    let event = PlannerEvent.getByIDJSON(id);
-    if (!event) {
-        res.status(404).send("Event not found.");
-        return;
+
+    let result = PlannerEvent.delete(id);
+    if (result) {
+        res.status(200).send("Event deleted successfully");
+    } else {
+        res.status(404).send("Event not found");
     }
-    res.json(PlannerEvent.delete(id));
 });
+
 
 app.listen(port, () => {
     console.log((new Date()).toJSON().toString());
