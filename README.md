@@ -28,4 +28,4 @@ Before you can run the application, make sure you have node.js installed
 3. Run `node api.mjs`
 
 ## Link to presentation video
-Put link to presentation here.
+https://youtu.be/PAuN62tF2gI
