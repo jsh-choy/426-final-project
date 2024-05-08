@@ -7,6 +7,7 @@ This Calendar Application is a web-based planner that allows users to view weath
 - Real-time weather updates
 - Add events to the calendar
 - Delete events from calendar
+- View events for each calendar day
 
 ## Technologies Used
 - HTML5

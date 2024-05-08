@@ -56,13 +56,15 @@ app.delete('/events/:id', (req, res) => {
         res.status(400).send("Invalid ID");
         return;
     }
-    let event = PlannerEvent.getByIDJSON(id);
-    if (!event) {
-        res.status(404).send("Event not found.");
-        return;
+
+    let result = PlannerEvent.delete(id);
+    if (result) {
+        res.status(200).send("Event deleted successfully");
+    } else {
+        res.status(404).send("Event not found");
     }
-    res.json(PlannerEvent.delete(id));
 });
+
 
 app.listen(port, () => {
     console.log((new Date()).toJSON().toString());

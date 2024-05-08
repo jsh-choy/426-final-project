@@ -8,12 +8,17 @@
 }
 
 body{
+  background: #59b69f;
+}
+
+#calendar-content {
   display: flex;
   align-items: center;
   padding: 0 10px;
   justify-content: center;
-  min-height: 100vh;
-  background: #59b69f;
+  flex-wrap: wrap;
+  flex-direction: column;
+  min-height: 600px;
 }
 
 .wrapper{
@@ -118,7 +123,7 @@ header .current-date{
 }
 
 .days li:not(.active):hover::before{
-  background: #f2f2f2;
+  background: #7ce0f9;
 }
 
 /* Weather */
@@ -145,7 +150,7 @@ header .current-date{
   position: fixed;
   z-index: 1000;
   right: 10%;
-  top: 50%;
+  top: 368px;
   width: 25%;
   transform: translateY(-50%);
   overflow: auto;
@@ -220,4 +225,63 @@ header .current-date{
 
 .modal-content button:hover {
   background-color: #4cae4c; /* Darker green on hover */
+}
+
+#eventList {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  flex-direction: column;
+}
+
+.event-box {
+  width: 450px;
+  margin: 10px;
+  padding: 10px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+  text-align: center;
+}
+
+.event-title {
+  font-size: 23px;
+  font-weight: bold;
+  padding: 7px;
+}
+
+.date-time {
+  padding: 5px;
+  font-size: 14px;
+  color: rgb(90, 90, 90);
+}
+
+.event-description {
+  padding: 5px;
+  font-size: 15px;
+}
+
+.event-info {
+  padding: 10px 10px 5px;
+  font-size: 15px;
+}
+
+.day-selected {
+  background-color: #f0f8ff; /* Light blue background for the selected day */
+  color: #333; /* Darker text for better contrast */
+  border: 2px solid #1e90ff; /* Blue border to highlight the selected day */
+}
+
+.delete-event {
+  padding: 5px;
+  background-color: #5cb85c; /* Green background for confirmation actions */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.delete-event:hover {
+  background-color: #4cae4c;
 }

@@ -1,7 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-    renderCalendar();
-    setupEventModal();
+    // Set up the CSS for event days
+    const style = document.createElement('style');
+    document.head.appendChild(style);
+    style.sheet.insertRule(`.days li.event { background-color: #ffd700; color: white; }`, 0);
+
+    // Fetch event dates and then render the calendar
+    fetchEventDates().then(() => {
+        renderCalendar();
+        setupEventModal();
+    });
 });
+
 
 const daysTag = document.querySelector(".days"),
 currentDate = document.querySelector(".current-date"),
@@ -10,7 +19,8 @@ prevNextIcon = document.querySelectorAll(".icons span");
 // This gets the new date, along with current month and year
 let date = new Date(),
 currYear = date.getFullYear(),
-currMonth = date.getMonth();
+currMonth = date.getMonth(),
+currDay = 0;
 
 // Putting months in an array
 const months = ["January", "February", "March", "April", "May", "June", "July",
@@ -30,8 +40,11 @@ function renderCalendar() {
     }
 
     for (let i = 1; i <= lastDateOfMonth; i++) {
+        const currentDate = new Date(currYear, currMonth, i);
+        const formattedDate = currentDate.toISOString().split('T')[0];
         let isToday = i === date.getDate() && currMonth === new Date().getMonth() && currYear === new Date().getFullYear() ? "active" : "";
-        liTag += `<li class="${isToday}">${i}</li>`;
+        let hasEvent = eventDates.has(formattedDate) ? "event" : "";
+        liTag += `<li class="${isToday} ${hasEvent}">${i}</li>`;
     }
 
     for (let i = lastDayOfMonth; i < 6; i++) {
@@ -41,16 +54,20 @@ function renderCalendar() {
     currentDate.innerText = `${months[currMonth]} ${currYear}`;
     daysTag.innerHTML = liTag;
 
-    // Adding click event listeners to days
     daysTag.querySelectorAll('li').forEach(day => {
-        day.onclick = () => { // Use onclick to replace any old handlers
+        day.onclick = () => {
             const dayNumber = day.innerText;
             const date = `${currYear}-${currMonth + 1}-${dayNumber}`; // Adjust month for proper format
             document.getElementById('eventDate').value = date;
             document.getElementById('eventModal').style.display = 'block';
+            displayEvents(dayNumber, currMonth, currYear);
+            currDay = dayNumber;
         };
     });
+
+    setupDayClicks();
 }
+
 
 prevNextIcon.forEach(icon => {
     icon.addEventListener("click", () => {
@@ -93,11 +110,30 @@ function setupEventModal() {
     });
 }
 
+let eventDates = new Set();
+
+async function fetchEventDates() {
+    try {
+        const response = await fetch('http://localhost:3000/events', { method: 'GET' });
+        const data = await response.json();
+        eventDates.clear(); // Clear old dates before setting new ones
+        data.forEach(event => {
+            const eventDate = new Date(event.date);
+            eventDates.add(eventDate.toISOString().split('T')[0]); // Store dates in 'YYYY-MM-DD' format
+        });
+    } catch (error) {
+        console.error('Error fetching event dates:', error);
+    }
+}
 
 function submitEventForm() {
     const form = document.getElementById('eventForm');
+    let newDate = new Date(form.eventDate.value);
+    let[hours, mins] = form.time.value.split(":");
+    newDate.setHours(hours);
+    newDate.setMinutes(mins);
     const eventData = {
-        date: form.eventDate.value,
+        date: newDate,
         title: form.title.value,
         description: form.description.value,
         location: form.location.value,
@@ -114,9 +150,7 @@ function submitEventForm() {
     .then(response => response.json())
     .then(data => {
         alert("Event created successfully!");
-        clearFormFields();  // Function call to clear the form
-        document.getElementById('eventModal').style.display = 'none';
-        renderCalendar(); // Refresh the calendar to show the new event
+        location.reload();
     })
     .catch(error => {
         console.error('Error:', error);
@@ -133,20 +167,67 @@ function clearFormFields() {
     document.getElementById('duration').value = '';
 }
 
+
 function deleteEvent(eventId) {
-    fetch(`http://localhost:3000/events/events/${eventId}`, {
+    if (!confirm("Are you sure you want to delete this event?")) {
+        return; // Stop the function if the user cancels the confirmation
+    }
+
+    fetch(`http://localhost:3000/events/${eventId}`, {
         method: 'DELETE'
     })
     .then(response => {
         if (response.ok) {
             alert("Event deleted successfully!");
-            renderCalendar();
+            location.reload();
         } else {
             alert("Failed to delete event.");
+            console.error('Delete failed:', response);
         }
     })
     .catch(error => {
         console.error('Error:', error);
         alert("Error deleting event.");
+    });
+}
+
+
+function setupDayClicks() {
+    const days = document.querySelectorAll('.days li:not(.inactive)');
+    days.forEach(day => {
+        day.addEventListener('click', () => {
+            document.querySelectorAll('.days li').forEach(d => d.classList.remove('day-selected'));
+            day.classList.add('day-selected');
+            const dayNumber = day.innerText;
+            const selectedDate = `${currYear}-${currMonth + 1}-${dayNumber}`;
+            document.getElementById('eventDate').value = selectedDate;  // Set this date in your hidden input field
+            document.getElementById('eventModal').style.display = 'block';  // Show the event modal
+        });
+    });
+}
+
+
+function displayEvents(day, month, year) {
+    fetch('http://localhost:3000/events', {
+        method: 'GET'
+    })
+    .then(response => response.json())
+    .then(data => {
+        const listDiv = document.getElementById("eventList");
+        listDiv.innerHTML = "";
+        data.forEach(event => {
+            let date = new Date(event.date);
+            if (date.getDate() == day && date.getMonth() == month && date.getFullYear() == year) {
+                listDiv.innerHTML += `
+                <div class="event-box">
+                    <div class="event-title">${event.title}</div>
+                    <hr>
+                    <div class="date-time">${date.toDateString()}<br>${date.toTimeString()}</div>
+                    <div class="event-description">${event.description}</div>
+                    <div class="event-info">${event.location}<br>${event.duration} minutes</div>
+                    <button class="delete-event" onclick="deleteEvent(${event.id})">Delete Event</button>
+                </div>`;
+            }
+        });
     });
 }
