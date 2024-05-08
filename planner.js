@@ -19,7 +19,8 @@ prevNextIcon = document.querySelectorAll(".icons span");
 // This gets the new date, along with current month and year
 let date = new Date(),
 currYear = date.getFullYear(),
-currMonth = date.getMonth();
+currMonth = date.getMonth(),
+currDay = 0;
 
 // Putting months in an array
 const months = ["January", "February", "March", "April", "May", "June", "July",
@@ -60,6 +61,7 @@ function renderCalendar() {
             document.getElementById('eventDate').value = date;
             document.getElementById('eventModal').style.display = 'block';
             displayEvents(dayNumber, currMonth, currYear);
+            currDay = dayNumber;
         };
     });
 
@@ -126,8 +128,12 @@ async function fetchEventDates() {
 
 function submitEventForm() {
     const form = document.getElementById('eventForm');
+    let newDate = new Date(form.eventDate.value);
+    let[hours, mins] = form.time.value.split(":");
+    newDate.setHours(hours);
+    newDate.setMinutes(mins);
     const eventData = {
-        date: form.eventDate.value,
+        date: newDate,
         title: form.title.value,
         description: form.description.value,
         location: form.location.value,
@@ -176,6 +182,7 @@ function deleteEvent(eventId) {
         if (response.ok) {
             alert("Event deleted successfully!");
             renderCalendar(); // Re-render the calendar to reflect the deletion
+            displayEvents(currDay, currMonth, currYear);
         } else {
             alert("Failed to delete event.");
             console.error('Delete failed:', response);
@@ -221,7 +228,7 @@ function displayEvents(day, month, year) {
                     <div class="date-time">${date.toDateString()}<br>${date.toTimeString()}</div>
                     <div class="event-description">${event.description}</div>
                     <div class="event-info">${event.location}<br>${event.duration} minutes</div>
-                    <button onclick="deleteEvent(${event.id})">Delete Event</button>
+                    <button class="delete-event" onclick="deleteEvent(${event.id})">Delete Event</button>
                 </div>`;
             }
         });
