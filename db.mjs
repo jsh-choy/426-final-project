@@ -14,19 +14,11 @@
              }
          });
 
-         db.run('CREATE TABLE IF NOT EXISTS events (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, completed BOOLEAN NOT NULL DEFAULT 0, user_id INTEGER NOT NULL, FOREIGN KEY(user_id) REFERENCES users(user_id))', (err) => {
+         db.run('CREATE TABLE IF NOT EXISTS events (id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT NOT NULL, description TEXT, location TEXT, "date" TEXT, duration INTEGER, user_id INTEGER, FOREIGN KEY(user_id) REFERENCES users(id))', (err) => {
              if (err) {
                  console.error('Error creating events table: ' + err.message);
              } else {
                  console.log('Events table created');
-             }
-         });
-
-         db.run('CREATE TABLE IF NOT EXISTS quotes (id INTEGER PRIMARY KEY AUTOINCREMENT, quote TEXT NOT NULL, user_id INTEGER NOT NULL, FOREIGN KEY(user_id) REFERENCES users(user_id))', (err) => {
-             if (err) {
-                 console.error('Error creating quotes table: ' + err.message);
-             } else {
-                 console.log('Quotes table created');
              }
          });
      }
