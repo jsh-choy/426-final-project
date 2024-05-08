@@ -150,9 +150,7 @@ function submitEventForm() {
     .then(response => response.json())
     .then(data => {
         alert("Event created successfully!");
-        clearFormFields();  // Function call to clear the form
-        document.getElementById('eventModal').style.display = 'none';
-        renderCalendar(); // Refresh the calendar to show the new event
+        location.reload();
     })
     .catch(error => {
         console.error('Error:', error);
@@ -181,8 +179,7 @@ function deleteEvent(eventId) {
     .then(response => {
         if (response.ok) {
             alert("Event deleted successfully!");
-            renderCalendar(); // Re-render the calendar to reflect the deletion
-            displayEvents(currDay, currMonth, currYear);
+            location.reload();
         } else {
             alert("Failed to delete event.");
             console.error('Delete failed:', response);
