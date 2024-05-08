@@ -26,7 +26,6 @@ app.post('/events', (req, res) => {
         return;
     }
     res.location('/events/' + event.id);
-    res.status(201).json(event);
 
     const { title, description, location, date, duration, user_id } = req.body;
     const sql = `INSERT INTO events (title, description , location, date, duration, user_id) VALUES (?, ?, ?, ?, ?, ?)`;
