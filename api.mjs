@@ -2,6 +2,7 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import {PlannerEvent} from './planner-event.mjs';
 import cors from 'cors';
+import { db } from './db.mjs'
 
 const app = express();
 
@@ -26,6 +27,17 @@ app.post('/events', (req, res) => {
     }
     res.location('/events/' + event.id);
     res.status(201).json(event);
+
+    const { title, description, location, date, duration, user_id } = req.body;
+    const sql = `INSERT INTO events (title, description , location, date, duration, user_id) VALUES (?, ?, ?, ?, ?, ?)`;
+
+    db.run(sql, [title, description, location, date, duration, user_id], function(err) {
+        if (err) {
+            res.status(500).send({ error: err.message });
+        } else {
+            res.status(201).send({ id: this.lastID });
+        }
+    });
 });
 
 app.put('/events/:id', (req, res) => {
